@@ -1,5 +1,3 @@
-'use server'
-
 // app/api/route.js
 import { NextResponse } from 'next/server';
 import { Client } from 'pg';
@@ -13,11 +11,12 @@ const client = new Client({
 
 client.connect();
 
-export default async function GET(req, res) {
-    try {
-      const results = await query('SELECT * FROM tbl_student'); // เปลี่ยน 'mytable' เป็นชื่อ table ของคุณ
-      res.status(200).json(results);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+export async function GET() {
+    'use server'
+  try {
+    const result = await client.query('SELECT * FROM tbl_student');
+    return NextResponse.json(result.rows);
+  } catch (err) {
+    return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
   }
+}
