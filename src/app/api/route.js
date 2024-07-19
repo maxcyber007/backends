@@ -11,11 +11,6 @@ const client = new Client({
 
 client.connect();
 
-export async function query(text, params) {
-    const res = await pool.query(text, params);
-    return res.rows;
-  }
-  
 export async function GET() {
     'use server'
   try {
