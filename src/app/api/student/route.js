@@ -68,23 +68,25 @@ export async function PUT(request) {
   }
 }
 
-export async function DELETE() {
-  return Response.json({
-    message: `DELETE method called`,
-  });
+export async function DELETE(request) {
+  try {
+    const { id } = await request.json();
+    const res = await pool.query('DELETE FROM tbl_student WHERE id = $1 RETURNING *', [id]);
+    if (res.rows.length === 0) {
+      return new Response(JSON.stringify({ error: 'User not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    return new Response(JSON.stringify(res.rows[0]), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 }
-// export async function GET(request) {
-//   try {
-//     const res = await pool.query('SELECT * FROM tbl_student');
-//     return new Response(JSON.stringify(res.rows), {
-//       status: 200,
-//       headers: { 'Content-Type': 'application/json' },
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-//       status: 500,
-//       headers: { 'Content-Type': 'application/json' },
-//     });
-//   }
-// }
