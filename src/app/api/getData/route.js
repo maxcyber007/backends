@@ -12,7 +12,6 @@ const client = new Client({
 client.connect();
 
 export async function GET() {
-    'use server'
   try {
     const result = await client.query('SELECT * FROM tbl_student');
     return NextResponse.json(result.rows);
