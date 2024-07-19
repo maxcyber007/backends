@@ -13,11 +13,11 @@ const client = new Client({
 
 client.connect();
 
-export async function GET(req, res) {
-  try {
-    const result = await client.query('SELECT * FROM tbl_student');
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+export default async function GET(req, res) {
+    try {
+      const results = await query('SELECT * FROM tbl_student'); // เปลี่ยน 'mytable' เป็นชื่อ table ของคุณ
+      res.status(200).json(results);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
-}
