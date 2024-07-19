@@ -11,11 +11,18 @@ const client = new Client({
 
 client.connect();
 
-export async function GET() {
+export async function GET(request) {
   try {
-    const result = await client.query('SELECT * FROM tbl_student');
-    return NextResponse.json(result.rows);
-  } catch (err) {
-    return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
+    const res = await client.query('SELECT * FROM tbl_student');
+    return new Response(JSON.stringify(res.rows), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
