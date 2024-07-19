@@ -9,7 +9,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-server.connect();
+pool.connect();
 
 export async function GET(request) {
   try {
