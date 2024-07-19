@@ -13,11 +13,11 @@ const client = new Client({
 
 client.connect();
 
-export async function GET() {
+export async function GET(req, res) {
   try {
     const result = await client.query('SELECT * FROM tbl_student');
-    return NextResponse.json(result.rows);
-  } catch (err) {
-    return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 }
