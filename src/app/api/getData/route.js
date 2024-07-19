@@ -1,19 +1,19 @@
 // app/api/route.js
 import { NextResponse } from 'next/server';
-import { Client } from 'pg';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const client = new Client({
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-client.connect();
+server.connect();
 
 export async function GET(request) {
   try {
-    const res = await client.query('SELECT * FROM tbl_student');
+    const res = await pool.query('SELECT * FROM tbl_student');
     return new Response(JSON.stringify(res.rows), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
