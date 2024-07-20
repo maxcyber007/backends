@@ -1,8 +1,10 @@
+'use client'
+
 // Example of logging in a user in a component
 import { useState } from 'react';
 
 function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
@@ -13,12 +15,12 @@ function Login() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
       if (response.ok) {
         setMessage('Login successful');
-        console.log('User:', data.user);
+        console.log('Student:', data);
       } else {
         setMessage(data.error);
         console.error('Error logging in:', data.error);
@@ -33,10 +35,10 @@ function Login() {
     <div>
       <h1>Login</h1>
       <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        type="username"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
       />
       <input
         type="password"

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { comparePassword } from '@/lib/auth';
+import { comparePassword } from '../lib/auth';
 import { Pool } from "pg";
 import dotenv from "dotenv";
 
@@ -24,10 +24,10 @@ export async function POST(request) {
       });
     }
 
-    const user = res.rows[0];
-    const match = await comparePassword(password, user.password);
+    const student = res.rows[0];
+    const match = await comparePassword(password, student.password);
 
-    if (!match) {
+    if (password != student.password) {
       return new Response(JSON.stringify({ error: 'Invalid password' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
@@ -36,7 +36,7 @@ export async function POST(request) {
 
     // สมมติว่าเราสร้าง JWT สำหรับการล็อกอิน (สามารถใช้ library เช่น jsonwebtoken)
     // ตัวอย่างนี้จะข้ามขั้นตอนการสร้าง JWT เพื่อความง่าย
-    return new Response(JSON.stringify({ message: 'Login successful', user }), {
+    return new Response(JSON.stringify({ message: 'Login successful', student }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
