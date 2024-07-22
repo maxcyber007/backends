@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { Pool } from "pg";
 import dotenv from "dotenv";
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 
@@ -31,7 +32,9 @@ export async function GET() {
 export async function POST(request) {
   try {
     const { id, firstname, lastname, username, password } = await request.json();
-    const res = await pool.query('INSERT INTO tbl_student (firstname, lastname, username, password) VALUES ($1, $2, $3, $4) RETURNING *', [firstname, lastname, username, password]);
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const res = await pool.query('INSERT INTO tbl_student (firstname, lastname, username, hashedPassword) VALUES ($1, $2, $3, $4) RETURNING *', [firstname, lastname, username, password]);
     return new Response(JSON.stringify(res.rows[0]), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
