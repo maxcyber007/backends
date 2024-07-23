@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { comparePassword } from '../lib/auth';
 import { Pool } from "pg";
 import dotenv from "dotenv";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -25,21 +27,28 @@ export async function POST(request) {
     }
 
     const student = res.rows[0];
-    const match = await comparePassword(password, student.password);
+    const match = await bcrypt.compare(password, student.password);
+    console.log(match);
 
-    if (password != student.password) {
+    if (match != true) {
       return new Response(JSON.stringify({ error: 'Invalid password' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
-    }
+    }else{
 
     // สมมติว่าเราสร้าง JWT สำหรับการล็อกอิน (สามารถใช้ library เช่น jsonwebtoken)
+    // Generate JWT token
+    const token = jwt.sign({ id: student.id, username: student.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    //res.status(200).json({ token });
+
     // ตัวอย่างนี้จะข้ามขั้นตอนการสร้าง JWT เพื่อความง่าย
-    return new Response(JSON.stringify({ message: 'Login successful', student }), {
+    return new Response(JSON.stringify({ message: 'Login successful', student, token }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
+
+    }
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
